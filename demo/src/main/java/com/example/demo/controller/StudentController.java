@@ -38,9 +38,8 @@ public class StudentController {
         String destination = (String) body.get("destination");
         String predictReturnDate = (String) body.get("predictReturnDate");
         String predictLeaveDate = (String) body.get("predictLeaveDate");
-        String status = (String) body.get("status");
         String studentId = (String) body.get("studentId");
-        return studentService.submitStudentLeaveApplication(reason, destination, predictReturnDate, predictLeaveDate, status, studentId);
+        return studentService.submitStudentLeaveApplication(reason, destination, predictReturnDate, predictLeaveDate, studentId);
 
     }
     @PostMapping("/returnapply")
@@ -48,10 +47,26 @@ public class StudentController {
         String reason = (String) body.get("reason");
         String location = (String) body.get("location");
         String predictReturnDate = (String) body.get("predictReturnDate");
-        String status = (String) body.get("status");
         String studentId = (String) body.get("studentId");
-        return studentService.submitStudentReturnApplication(reason, location, predictReturnDate, status, studentId);
+        return studentService.submitStudentReturnApplication(reason, location, predictReturnDate, studentId);
     }
+    @GetMapping("/getleaveapplication")
+    public Response<?> getLeaveApplication(@RequestBody JSONObject body){
+        String studentId = (String) body.get("studentId");
+        String status = (String) body.get("status");
+        return studentService.getStudentLeaveApplication(studentId, status);
+    }
+    @GetMapping("/getreturnapplication")
+    public Response<?> getReturnApplication(@RequestBody JSONObject body){
+        String studentId = (String) body.get("studentId");
+        String status = (String) body.get("status");
+        return studentService.getStudentReturnApplication(studentId, status);
+    }
+    @GetMapping("/getleavetime/{studentId}")
+    public Response<?> getLeaveTime(@PathVariable(name = "studentId")String studentId){
+        return studentService.getTotalLeaveTime(studentId);
+    }
+
 
 
 

@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.example.demo.utils.ConstVariables;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -38,16 +40,17 @@ public class LeaveApplication {
     @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
+
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student  student;
 
-    public LeaveApplication(String reason, String destination, String predict_return_date, String predict_leave_date, String status, Student student) {
+    public LeaveApplication(String reason, String destination, String predict_return_date, String predict_leave_date, Student student) {
         this.reason = reason;
         this.destination = destination;
         this.predict_return_date = predict_return_date;
         this.predict_leave_date = predict_leave_date;
-        this.status = status;
+        this.status = ConstVariables.CLASS_ADMIN_CHECK;
         this.student = student;
     }
 }

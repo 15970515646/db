@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.utils.ConstVariables;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -39,11 +40,11 @@ public class ReturnApplication {
     @JoinColumn(name = "student_id")
     private Student  student;
 
-    public ReturnApplication(String reason, String location, String predict_return_date, String status, Student student) {
+    public ReturnApplication(String reason, String location, String predict_return_date, Student student) {
         this.reason = reason;
         this.location = location;
         this.predict_return_date = predict_return_date;
-        this.status = status;
+        this.status = ConstVariables.CLASS_ADMIN_CHECK;
         this.student = student;
     }
 }

@@ -5,6 +5,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.sql.Timestamp;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -21,16 +23,19 @@ public class StudentLog {
     @Column(name = "action", length = 256, nullable = false)
     private String  action;
 
-    @Column(name = "time", length = 256, nullable = false)
-    private String  time;
+    @Column(name = "campus_name", length = 256, nullable = false)
+    private String  campusName;
+
+    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createTime;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
-    public StudentLog(String action, String time, Student student) {
+    public StudentLog(String action, String campusName, Student student) {
         this.action = action;
-        this.time = time;
+        this.campusName = campusName;
         this.student = student;
     }
 }
