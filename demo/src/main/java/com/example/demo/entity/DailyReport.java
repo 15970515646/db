@@ -1,8 +1,12 @@
 package com.example.demo.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
@@ -12,38 +16,31 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Return_application")
+@Table(name = "DailyReport")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class ReturnApplication {
+public class DailyReport {
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(name = "id", length = 35, nullable = false)
     private String id;
 
-    @Column(name = "reason", length = 256, nullable = false)
-    private String  reason;
+    @Column(name = "healthy_status", length = 35, nullable = false)
+    private String  healthy_status;
 
-    @Column(name = "location", length = 256, nullable = false)
+    @Column(name = "location", length = 35, nullable = false)
     private String  location;
-
-    @Column(name = "predict_return_date", length = 256, nullable = false)
-    private String  predict_return_date;
-
-    @Column(name = "status", length = 256, nullable = false)
-    private String  status;
 
     @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student  student;
 
-    public ReturnApplication(String reason, String location, String predict_return_date, String status, Student student) {
-        this.reason = reason;
+    public DailyReport(String healthy_status, String location, Student student) {
+        this.healthy_status = healthy_status;
         this.location = location;
-        this.predict_return_date = predict_return_date;
-        this.status = status;
         this.student = student;
     }
 }

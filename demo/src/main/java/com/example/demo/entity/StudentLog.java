@@ -10,13 +10,13 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Log")
+@Table(name = "StudentLog")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class Log {
+public class StudentLog {
     @Id
-    @GeneratedValue(generator = "jpa=uuid", strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "jpa-uuid")
     @Column(name = "id", length = 35, nullable = false)
-    private Integer id;
+    private String id;
 
     @Column(name = "action", length = 256, nullable = false)
     private String  action;
@@ -26,5 +26,11 @@ public class Log {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private Student  student;
+    private Student student;
+
+    public StudentLog(String action, String time, Student student) {
+        this.action = action;
+        this.time = time;
+        this.student = student;
+    }
 }

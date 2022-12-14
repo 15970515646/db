@@ -17,6 +17,6 @@ import java.util.Set;
 public class DeptAdmin {
     @Id
     @Column(name = "teacher_id", length = 11, nullable = false)
-    private Integer teacher_id;
+    private String teacher_id;
 
 }
