@@ -24,4 +24,7 @@ public class Class {
 
     @OneToMany(targetEntity = Student.class,mappedBy = "aClass")
     private Set<Student> StudentSet=new HashSet<>();
+
+    @OneToMany(targetEntity = ClassAdmin.class,mappedBy = "aClass")
+    private Set<ClassAdmin> classAdminSet=new HashSet<>();
 }

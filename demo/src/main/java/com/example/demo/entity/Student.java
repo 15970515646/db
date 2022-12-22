@@ -51,7 +51,7 @@ public class Student {
     private Set<LeaveApplication> LeaveApplicationSet=new HashSet<>();
 
     @OneToMany(targetEntity = ReturnApplication.class,mappedBy = "student")
-    private Set<LeaveApplication> ReturnApplicationSet=new HashSet<>();
+    private Set<ReturnApplication> ReturnApplicationSet=new HashSet<>();
 
     @OneToMany(targetEntity = StudentLog.class,mappedBy = "student")
     private Set<StudentLog> LogSet=new HashSet<>();
@@ -64,4 +64,15 @@ public class Student {
     @JoinColumn(name = "class_name")
     private Class aClass;
 
+    @OneToMany(targetEntity = ClassAdminExamineReturn.class,mappedBy = "student")
+    private Set<ClassAdminExamineReturn> classAdminExamineReturnSet=new HashSet<>();
+
+    @OneToMany(targetEntity = DeptAdminExamineReturn.class,mappedBy = "student")
+    private Set<DeptAdminExamineReturn> deptAdminExamineReturnSet=new HashSet<>();
+
+    @OneToMany(targetEntity = ClassAdminExamineLeave.class,mappedBy = "student")
+    private Set<ClassAdminExamineLeave> classAdminExamineLeaveSet=new HashSet<>();
+
+    @OneToMany(targetEntity = DeptAdminExamineLeave.class,mappedBy = "student")
+    private Set<DeptAdminExamineLeave> deptAdminExamineLeaveSet=new HashSet<>();
 }

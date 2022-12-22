@@ -20,4 +20,7 @@ public class Department {
 
     @OneToMany(targetEntity = Class.class,mappedBy = "department")
     private Set<Class> classSet=new HashSet<>();
+
+    @OneToMany(targetEntity = DeptAdmin.class,mappedBy = "department")
+    private Set<DeptAdmin> DeptAdminSet=new HashSet<>();
 }

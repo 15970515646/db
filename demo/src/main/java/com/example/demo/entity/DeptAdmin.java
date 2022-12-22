@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,5 +20,15 @@ public class DeptAdmin {
     @Id
     @Column(name = "teacher_id", length = 11, nullable = false)
     private String teacher_id;
+
+    @ManyToOne
+    @JoinColumn(name = "dept_name")
+    private Department department;
+
+    @OneToMany(targetEntity = DeptAdminExamineReturn.class,mappedBy = "deptAdmin")
+    private Set<DeptAdminExamineReturn> deptAdminExamineReturnSet=new HashSet<>();
+
+    @OneToMany(targetEntity = DeptAdminExamineLeave.class,mappedBy = "deptAdmin")
+    private Set<DeptAdminExamineLeave> deptAdminExamineLeaveSet=new HashSet<>();
 
 }
