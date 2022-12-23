@@ -27,23 +27,23 @@ public class ReturnApplication {
     @Column(name = "location", length = 256, nullable = false)
     private String  location;
 
-    @Column(name = "predict_return_date", length = 256, nullable = false)
-    private String  predict_return_date;
+    @Column(name = "predictReturnDate", length = 256, nullable = false)
+    private String  predictReturnDate;
 
     @Column(name = "status", length = 256, nullable = false)
     private String  status;
 
-    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "studentId")
     private Student  student;
 
     public ReturnApplication(String reason, String location, String predict_return_date, Student student) {
         this.reason = reason;
         this.location = location;
-        this.predict_return_date = predict_return_date;
+        this.predictReturnDate = predict_return_date;
         this.status = ConstVariables.CLASS_ADMIN_CHECK;
         this.student = student;
     }

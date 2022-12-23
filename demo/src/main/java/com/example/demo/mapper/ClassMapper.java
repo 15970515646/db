@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClassMapper extends JpaRepository<Class,Long> {
 
-    Class findClassByClass_name(String className);
+     public Class findByClassName(String className);
 }

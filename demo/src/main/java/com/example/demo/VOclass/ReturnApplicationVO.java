@@ -11,4 +11,5 @@ public class ReturnApplicationVO {
     private String predictReturnDate;
     private String status;
     private String createTime;
+    private String studentId;
 }

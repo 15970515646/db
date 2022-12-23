@@ -15,11 +15,11 @@ import java.util.Set;
 @Table(name = "Campus")
 public class Campus {
     @Id
-    @Column(name = "campus_name", length = 256, nullable = false)
-    private String  campus_name;
+    @Column(name = "campusName", length = 256, nullable = false)
+    private String  campusName;
 
-    @Column(name = "campus_status", length = 256, nullable = false)
-    private String  campus_status;
+    @Column(name = "campusStatus", length = 256, nullable = false)
+    private String  campusStatus;
 
     @OneToMany(targetEntity = Student.class,mappedBy = "campus")
     private Set<Student> StudentSet=new HashSet<>();

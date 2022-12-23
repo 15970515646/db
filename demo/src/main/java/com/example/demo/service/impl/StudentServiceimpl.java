@@ -98,7 +98,7 @@ public class StudentServiceimpl implements StudentService {
         for (LeaveApplication leaveApplication : list){
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String timeStr = df.format(leaveApplication.getCreateTime());
-            res.add(new LeaveApplicationVO(leaveApplication.getReason(), leaveApplication.getDestination(), leaveApplication.getPredict_return_date(),leaveApplication.getPredict_leave_date(),leaveApplication.getStatus(),timeStr));
+            res.add(new LeaveApplicationVO(leaveApplication.getReason(), leaveApplication.getDestination(), leaveApplication.getPredictReturnDate(),leaveApplication.getPredictLeaveDate(),leaveApplication.getStatus(),timeStr,leaveApplication.getStudent().getId()));
         }
         return new Response<>(true,"查询成功",res);
     }
@@ -111,7 +111,7 @@ public class StudentServiceimpl implements StudentService {
         for (ReturnApplication returnApplication : list){
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String timeStr = df.format(returnApplication.getCreateTime());
-            res.add(new ReturnApplicationVO(returnApplication.getReason(), returnApplication.getLocation(), returnApplication.getPredict_return_date(),returnApplication.getStatus(),timeStr));
+            res.add(new ReturnApplicationVO(returnApplication.getReason(), returnApplication.getLocation(), returnApplication.getPredictReturnDate(),returnApplication.getStatus(),timeStr,returnApplication.getStudent().getId()));
         }
         return new Response<>(true,"查询成功",res);
     }

@@ -1,10 +1,11 @@
 package com.example.demo.entity;
 
 import com.example.demo.utils.ConstVariables;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
@@ -28,28 +29,28 @@ public class LeaveApplication {
     @Column(name = "destination", length = 256, nullable = false)
     private String  destination;
 
-    @Column(name = "predict_return_date", length = 256, nullable = false)
-    private String  predict_return_date;
+    @Column(name = "predictReturnDate", length = 256, nullable = false)
+    private String  predictReturnDate;
 
-    @Column(name = "predict_leave_date", length = 256, nullable = false)
-    private String  predict_leave_date;
+    @Column(name = "predictLeaveDate", length = 256, nullable = false)
+    private String  predictLeaveDate;
 
     @Column(name = "status", length = 256, nullable = false)
     private String  status;
 
-    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "studentId")
     private Student  student;
 
     public LeaveApplication(String reason, String destination, String predict_return_date, String predict_leave_date, Student student) {
         this.reason = reason;
         this.destination = destination;
-        this.predict_return_date = predict_return_date;
-        this.predict_leave_date = predict_leave_date;
+        this.predictReturnDate = predict_return_date;
+        this.predictLeaveDate = predict_leave_date;
         this.status = ConstVariables.CLASS_ADMIN_CHECK;
         this.student = student;
     }

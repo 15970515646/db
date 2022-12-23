@@ -19,11 +19,11 @@ import java.util.Set;
 @Table(name = "ClassAdmin")
 public class ClassAdmin {
     @Id
-    @Column(name = "teacher_id", length = 11, nullable = false)
+    @Column(name = "teacherId", length = 11, nullable = false)
     private String teacher_id;
 
     @ManyToOne
-    @JoinColumn(name = "class_name")
+    @JoinColumn(name = "className")
     private Class aClass;
 
     @OneToMany(targetEntity = ClassAdminExamineLeave.class,mappedBy = "classAdmin")

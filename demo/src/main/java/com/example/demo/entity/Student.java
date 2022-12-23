@@ -17,13 +17,13 @@ import java.util.Set;
 @Table(name = "Student")
 public class Student {
     @Id
-    @Column(name = "student_id", length = 11, nullable = false)
+    @Column(name = "studentId", length = 11, nullable = false)
     private String id;
 
     @Column(name = "name",length = 256,nullable = false)
     private String name;
 
-    @Column(name = "phone_number",length = 11,nullable = false)
+    @Column(name = "phoneNumber",length = 11,nullable = false)
     private String phoneNumber;
 
     @Column(name = "email",length = 256,nullable = false)
@@ -32,13 +32,13 @@ public class Student {
     @Column(name = "dormitory",length = 256,nullable = false)
     private String dormitory;
 
-    @Column(name = "home_address",length = 256,nullable = false)
+    @Column(name = "homeAddress",length = 256,nullable = false)
     private String homeAddress;
 
-    @Column(name = "identity_type",length = 256,nullable = false)
+    @Column(name = "identityType",length = 256,nullable = false)
     private String identityType;
 
-    @Column(name = "identity_id",length = 256,nullable = false)
+    @Column(name = "identityId",length = 256,nullable = false)
     private String identityId;
 
     @Column(name = "status",length = 256,nullable = false)
@@ -57,11 +57,11 @@ public class Student {
     private Set<StudentLog> LogSet=new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "campus_name")
+    @JoinColumn(name = "campusName")
     private Campus campus;
 
     @ManyToOne
-    @JoinColumn(name = "class_name")
+    @JoinColumn(name = "className")
     private Class aClass;
 
     @OneToMany(targetEntity = ClassAdminExamineReturn.class,mappedBy = "student")

@@ -28,24 +28,24 @@ public class DeptAdminExamineLeave {
     @Column(name = "destination", length = 256, nullable = false)
     private String  destination;
 
-    @Column(name = "predict_return_date", length = 256, nullable = false)
-    private String  predict_return_date;
+    @Column(name = "predictReturnDate", length = 256, nullable = false)
+    private String  predictReturnDate;
 
-    @Column(name = "predict_leave_date", length = 256, nullable = false)
-    private String  predict_leave_date;
+    @Column(name = "predictLeaveDate", length = 256, nullable = false)
+    private String  predictLeaveDate;
 
     @Column(name = "status", length = 256, nullable = false)
     private String  status;
 
-    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "studentId")
     private Student  student;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacherId")
     private DeptAdmin deptAdmin;
 }

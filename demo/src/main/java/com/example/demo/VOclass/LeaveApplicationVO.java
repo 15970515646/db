@@ -12,4 +12,5 @@ public class LeaveApplicationVO {
     private String predictLeaveDate;
     private String status;
     private String createTime;
+    private String studentId;
 }

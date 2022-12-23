@@ -10,7 +10,7 @@ import java.util.List;
 public interface StudentMapper extends JpaRepository<Student,Long> {
     Student findById(String studentId);
 
-    List<Student>findAllByAClass_Class_name(String className);
+//    List<Student>findAllByAClass_ClassName(String className);
 
     List<Student>findAllByStatus(String status);
 }

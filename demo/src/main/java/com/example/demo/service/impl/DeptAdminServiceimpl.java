@@ -1,6 +1,9 @@
 package com.example.demo.service.impl;
 
 
+import com.example.demo.VOclass.LeaveApplicationVO;
+import com.example.demo.VOclass.ReturnApplicationVO;
+import com.example.demo.VOclass.StudentVO;
 import com.example.demo.entity.Class;
 import com.example.demo.entity.Department;
 import com.example.demo.entity.LeaveApplication;
@@ -13,6 +16,7 @@ import com.example.demo.utils.Response;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,18 +47,21 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         long lasttime = time.getTime() - day_num*MILLI_TO_DAY;
         List<LeaveApplication> leaveList1 = leaveApplicationMapper.findAllByStatus(ConstVariables.CLASS_ADMIN_CHECK);
         List<LeaveApplication> leaveList2 = leaveApplicationMapper.findAllByStatus(ConstVariables.DEPT_ADMIN_CHECK);
-        List<LeaveApplication> result = new ArrayList<>();
+        List<LeaveApplicationVO> result = new ArrayList<>();
         for(LeaveApplication l:leaveList1){
             if(l.getCreateTime().getTime()>=lasttime){
-                result.add(l);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(l.getCreateTime());
+                result.add(new LeaveApplicationVO(l.getReason(),l.getDestination(),l.getPredictReturnDate(),l.getPredictLeaveDate(),l.getStatus(),timeStr,l.getStudent().getId()));
             }
         }
         for(LeaveApplication l:leaveList2){
             if(l.getCreateTime().getTime()>=lasttime){
-                result.add(l);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(l.getCreateTime());
+                result.add(new LeaveApplicationVO(l.getReason(),l.getDestination(),l.getPredictReturnDate(),l.getPredictLeaveDate(),l.getStatus(),timeStr,l.getStudent().getId()));
             }
         }
-
         return new Response<>(true,"查询成功",result);
     }
 
@@ -62,20 +69,24 @@ public class DeptAdminServiceimpl implements DeptAdminService {
     public Response<?> getNoApplyForReturn(int day_num) {
         Timestamp time=new Timestamp(System.currentTimeMillis());
         long lasttime = time.getTime() - day_num*MILLI_TO_DAY;
-        List<ReturnApplication> leaveList1 = returnApplicationMapper.findAllByStatus(ConstVariables.CLASS_ADMIN_CHECK);
-        List<ReturnApplication> leaveList2 = returnApplicationMapper.findAllByStatus(ConstVariables.DEPT_ADMIN_CHECK);
-        List<ReturnApplication> result = new ArrayList<>();
-        for(ReturnApplication l:leaveList1){
-            if(l.getCreateTime().getTime()>=lasttime){
-                result.add(l);
-            }
-        }
-        for(ReturnApplication l:leaveList2){
-            if(l.getCreateTime().getTime()>=lasttime){
-                result.add(l);
-            }
-        }
+        List<ReturnApplication> returnList1 = returnApplicationMapper.findAllByStatus(ConstVariables.CLASS_ADMIN_CHECK);
+        List<ReturnApplication> returnList2 = returnApplicationMapper.findAllByStatus(ConstVariables.DEPT_ADMIN_CHECK);
+        List<ReturnApplicationVO> result = new ArrayList<>();
+        for(ReturnApplication r:returnList1){
+            if(r.getCreateTime().getTime()>=lasttime){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(r.getCreateTime());
+                result.add(new ReturnApplicationVO(r.getReason(),r.getLocation(),r.getPredictReturnDate(),r.getStatus(),timeStr,r.getStudent().getId()));
 
+            }
+        }
+        for(ReturnApplication r:returnList2){
+            if(r.getCreateTime().getTime()>=lasttime){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(r.getCreateTime());
+                result.add(new ReturnApplicationVO(r.getReason(),r.getLocation(),r.getPredictReturnDate(),r.getStatus(),timeStr,r.getStudent().getId()));
+            }
+        }
         return new Response<>(true,"查询成功",result);
     }
 
@@ -83,7 +94,7 @@ public class DeptAdminServiceimpl implements DeptAdminService {
     public Response<?> getMostReturnApplicationStudent(boolean all, String className, String deptName,int studentNum) {
 
         //查询
-        List<Student> result = null;
+        List<StudentVO> result = new ArrayList<>();
         List<Student> studentList = new ArrayList<>();
         if (all == true || (className.equals("")&&deptName.equals(""))) {
             studentList = studentMapper.findAll();
@@ -91,13 +102,13 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         }
         else{
             if(className.equals("")){
-                Department department = departmentMapper.findDepartmentByDept_name(deptName);
+                Department department = departmentMapper.findDepartmentByDeptName(deptName);
                 for(Class c:department.getClassSet()){
                     studentList.addAll(c.getStudentSet());
                 }
             }
             else {
-                Class c = classMapper.findClassByClass_name(className);
+                Class c = classMapper.findByClassName(className);
                 studentList.addAll(c.getStudentSet());
             }
         }
@@ -113,8 +124,12 @@ public class DeptAdminServiceimpl implements DeptAdminService {
                 }
             }
         }
-        for (int i = 0; i < studentNum; i++) {
-            result.add(studentList.get(i));
+        int len=studentNum;
+        if(studentList.size()<studentNum){
+            len=studentList.size();
+        }
+        for (int i = 0; i < len; i++) {
+            result.add(new StudentVO(studentList.get(i).getId(),studentList.get(i).getName()));
         }
 
         return new Response<>(true, "查询成功", result);
@@ -122,7 +137,11 @@ public class DeptAdminServiceimpl implements DeptAdminService {
 
     @Override
     public Response<?> getStudentOutSchool() {
-        List<Student> result = studentMapper.findAllByStatus(ConstVariables.OUT_CAMPUS);
+        List<Student> studentList = studentMapper.findAllByStatus(ConstVariables.OUT_CAMPUS);
+        List<StudentVO> result=new ArrayList<>();
+        for (Student s:studentList){
+            result.add(new StudentVO(s.getId(),s.getName()));
+        }
         return new Response<>(true, "查询成功", result);
     }
 
@@ -137,13 +156,13 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         }
         else{
             if(className.equals("")){
-                Department department = departmentMapper.findDepartmentByDept_name(deptName);
+                Department department = departmentMapper.findDepartmentByDeptName(deptName);
                 for(Class c:department.getClassSet()){
                     studentList.addAll(c.getStudentSet());
                 }
             }
             else {
-                Class c = classMapper.findClassByClass_name(className);
+                Class c = classMapper.findByClassName(className);
                 studentList.addAll(c.getStudentSet());
             }
         }

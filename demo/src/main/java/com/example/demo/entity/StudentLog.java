@@ -23,14 +23,14 @@ public class StudentLog {
     @Column(name = "action", length = 256, nullable = false)
     private String  action;
 
-    @Column(name = "campus_name", length = 256, nullable = false)
+    @Column(name = "campusName", length = 256, nullable = false)
     private String  campusName;
 
-    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "studentId")
     private Student student;
 
     public StudentLog(String action, String campusName, Student student) {

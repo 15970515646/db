@@ -15,8 +15,8 @@ import java.util.Set;
 @Table(name = "Department")
 public class Department {
     @Id
-    @Column(name = "Dept_name", length = 256, nullable = false)
-    private String  dept_name;
+    @Column(name = "deptName", length = 256, nullable = false)
+    private String  deptName;
 
     @OneToMany(targetEntity = Class.class,mappedBy = "department")
     private Set<Class> classSet=new HashSet<>();

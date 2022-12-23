@@ -15,11 +15,11 @@ import java.util.Set;
 @Table(name = "Class")
 public class Class {
     @Id
-    @Column(name = "class_name", length = 256, nullable = false)
-    private String  class_name;
+    @Column(name = "className", length = 256, nullable = false)
+    private String  className;
 
     @ManyToOne
-    @JoinColumn(name = "dept_name")
+    @JoinColumn(name = "deptName")
     private Department department;
 
     @OneToMany(targetEntity = Student.class,mappedBy = "aClass")

@@ -2,11 +2,11 @@ package com.example.demo.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import lombok.*;
-import org.hibernate.annotations.GenerationTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
@@ -24,18 +24,18 @@ public class DailyReport {
     @Column(name = "id", length = 35, nullable = false)
     private String id;
 
-    @Column(name = "healthy_status", length = 35, nullable = false)
+    @Column(name = "healthyStatus", length = 35, nullable = false)
     private String  healthy_status;
 
     @Column(name = "location", length = 35, nullable = false)
     private String  location;
 
-    @Column(name = "create_time",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "studentId")
     private Student  student;
 
     public DailyReport(String healthy_status, String location, Student student) {
