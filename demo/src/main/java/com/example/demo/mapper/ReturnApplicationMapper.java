@@ -11,4 +11,5 @@ import java.util.List;
 public interface ReturnApplicationMapper extends JpaRepository<ReturnApplication, Long> {
     List<ReturnApplication> findByStudentAndStatus(Student student, String status);
 
+    List <ReturnApplication>findAllByStatus(String status);
 }
