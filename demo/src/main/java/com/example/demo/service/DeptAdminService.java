@@ -26,4 +26,5 @@ public interface DeptAdminService {
 
     public Response<?> getMostLogCampus(int dayNum, String deptName);
 
+    public Response<?> getstudentoutschoolnotsubmitfor24();
 }

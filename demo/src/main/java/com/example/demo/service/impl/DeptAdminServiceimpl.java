@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.VOclass.LeaveApplicationVO;
+import com.example.demo.VOclass.LeaveStudentVO;
 import com.example.demo.VOclass.ReturnApplicationVO;
 import com.example.demo.VOclass.StudentVO;
 import com.example.demo.entity.*;
@@ -41,6 +42,21 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         this.dailyReportMapper = dailyReportMapper;
     }
 
+    long    computerAllTime(Student s){
+        List<StudentLog> list = studentLogMapper.findByStudent(s);
+        int length = list.size();
+        long totalTime = 0;
+        int count = 0;
+        for (int i=0;i<length-1;i++) {
+            if (list.get(i).getAction().equals(ConstVariables.OUT_CAMPUS)) {
+                totalTime += list.get(i + 1).getCreateTime().getTime() -
+                        list.get(i).getCreateTime().getTime() ;
+                count++;
+            }
+
+        }
+        return totalTime/count;
+    }
     @Override
     public Response<?> getNoApplyForLeave(int day_num) {
         Timestamp time=new Timestamp(System.currentTimeMillis());
@@ -115,7 +131,7 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         //排序申请次数
         for (int i = 0; i < studentList.size(); i++) {
             for (int j = 0; j < studentList.size() - i - 1; j++) {
-                if (studentList.get(j).getReturnApplicationSet().size() < studentList.get(j).getReturnApplicationSet().size()) {
+                if (studentList.get(j).getReturnApplicationSet().size() < studentList.get(j+1).getReturnApplicationSet().size()) {
                     Student temp;
                     temp = studentList.get(j);
                     studentList.set(j, studentList.get(j + 1));
@@ -137,18 +153,25 @@ public class DeptAdminServiceimpl implements DeptAdminService {
 
     @Override
     public Response<?> getStudentOutSchool() {
-        List<Student> studentList = studentMapper.findAllByStatus(ConstVariables.OUT_CAMPUS);
-        List<StudentVO> result=new ArrayList<>();
+        List<Student> studentList = studentMapper.findAll();
+        List<LeaveStudentVO> result=new ArrayList<>();
         for (Student s:studentList){
-            result.add(new StudentVO(s.getId(),s.getName()));
+            List<StudentLog> studentLogList = studentLogMapper.findByStudent(s);
+            if(studentLogList.get(studentLogList.size()-1).getAction().equals(ConstVariables.OUT_CAMPUS)){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(studentLogList.get(studentLogList.size()-1).getCreateTime());
+                result.add(new LeaveStudentVO(s.getId(),s.getName(),timeStr));
+            }
+
         }
         return new Response<>(true, "查询成功", result);
     }
 
+
     @Override
     public Response<?> getLongestTimeStudent(boolean all, String className, String deptName, int studentNum) {
         //查询
-        List<Student> result = null;
+        List<StudentVO> result = new ArrayList<>();
         List<Student> studentList = new ArrayList<>();
         if (all == true || (className.equals("")&&deptName.equals(""))) {
             studentList = studentMapper.findAll();
@@ -166,10 +189,10 @@ public class DeptAdminServiceimpl implements DeptAdminService {
                 studentList.addAll(c.getStudentSet());
             }
         }
-        //排序时长，未完成
+        //排序时长
         for (int i = 0; i < studentList.size(); i++) {
             for (int j = 0; j < studentList.size() - i - 1; j++) {
-                if (studentList.get(j).getReturnApplicationSet().size() < studentList.get(j).getReturnApplicationSet().size()) {
+                if (computerAllTime(studentList.get(j))<computerAllTime(studentList.get(j+1))) {
                     Student temp;
                     temp = studentList.get(j);
                     studentList.set(j, studentList.get(j + 1));
@@ -178,10 +201,32 @@ public class DeptAdminServiceimpl implements DeptAdminService {
                 }
             }
         }
-        for (int i = 0; i < studentNum; i++) {
-            result.add(studentList.get(i));
+        int len=studentNum;
+        if(studentList.size()<studentNum){
+            len=studentList.size();
+        }
+        for (int i = 0; i < len; i++) {
+            result.add(new StudentVO(studentList.get(i).getId(),studentList.get(i).getName()));
         }
 
+        return new Response<>(true, "查询成功", result);
+    }
+    @Override
+    public Response<?> getstudentoutschoolnotsubmitfor24() {
+        List<StudentVO> result = new ArrayList<>();
+        List<Student> studentList = studentMapper.findAll();
+        for(Student s:studentList){
+            List<StudentLog> logList = studentLogMapper.findByStudent(s);
+            List<LeaveApplication> leaveApplicationList = leaveApplicationMapper.findByStudent(s);
+            if(logList.get(logList.size()-1).getAction().equals(ConstVariables.OUT_CAMPUS)){
+                if(!leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.APPROVE_APPLY)&&!leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.REFUSE_APPLY)){
+                    Timestamp time=new Timestamp(System.currentTimeMillis());
+                    if(time.getTime()-logList.get(logList.size()-1).getCreateTime().getTime()>24*ConstVariables.MILLI_TO_HOUR){
+                        result.add(new StudentVO(s.getId(),s.getName()));
+                    }
+                }
+            }
+        }
         return new Response<>(true, "查询成功", result);
     }
 
@@ -225,7 +270,7 @@ public class DeptAdminServiceimpl implements DeptAdminService {
             List<StudentLog>studentLogs = studentLogMapper.findByStudent(student);
             if(studentLogs.size()>0 && studentLogs.get(studentLogs.size()-1).getAction().equals(ConstVariables.IN_CAMPUS)){
                 for(StudentLog studentLog : studentLogs){
-                    if (today-studentLog.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1)
+                    if ((today-studentLog.getCreateTime().getTime())/ MILLI_TO_DAY<dayNum+1)
                         flag=1;
                 }
                 if (flag==0)
@@ -341,6 +386,8 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         return new Response<>(true, "获取成功", list.get(3).getKey());
 
     }
+
+
 
     private List<Student> compareDailyReport(Student student, List<Student> studentList, int dayNum){
         List<Student> students = new ArrayList<>();
