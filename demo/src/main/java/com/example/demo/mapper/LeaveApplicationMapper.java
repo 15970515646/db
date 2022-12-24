@@ -14,6 +14,5 @@ public interface LeaveApplicationMapper extends JpaRepository<LeaveApplication, 
     List<LeaveApplication>findByStudentAndStatus(Student student, String status);
 
     List<LeaveApplication>findAllByCreateTimeLessThan(Timestamp time);
-
     List <LeaveApplication>findAllByStatus(String status);
 }

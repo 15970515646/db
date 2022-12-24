@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -44,35 +45,45 @@ public class Student {
     @Column(name = "status",length = 256,nullable = false)
     private String status;
 
+    @JsonIgnore
     @OneToMany(targetEntity = DailyReport.class,mappedBy = "student")
     private Set<DailyReport> dailyReportSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = LeaveApplication.class,mappedBy = "student")
     private Set<LeaveApplication> LeaveApplicationSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = ReturnApplication.class,mappedBy = "student")
     private Set<ReturnApplication> ReturnApplicationSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = StudentLog.class,mappedBy = "student")
     private Set<StudentLog> LogSet=new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "campusName")
     private Campus campus;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "className")
     private Class aClass;
 
+    @JsonIgnore
     @OneToMany(targetEntity = ClassAdminExamineReturn.class,mappedBy = "student")
     private Set<ClassAdminExamineReturn> classAdminExamineReturnSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = DeptAdminExamineReturn.class,mappedBy = "student")
     private Set<DeptAdminExamineReturn> deptAdminExamineReturnSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = ClassAdminExamineLeave.class,mappedBy = "student")
     private Set<ClassAdminExamineLeave> classAdminExamineLeaveSet=new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(targetEntity = DeptAdminExamineLeave.class,mappedBy = "student")
     private Set<DeptAdminExamineLeave> deptAdminExamineLeaveSet=new HashSet<>();
 }

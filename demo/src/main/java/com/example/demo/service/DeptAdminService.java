@@ -13,4 +13,6 @@ public interface DeptAdminService {
     public Response<?> getStudentOutSchool();
 
     public Response<?> getLongestTimeStudent(boolean all, String className, String deptName, int studentNum);
+
+    public Response<?> getSubmitLeaveNotLeave();
 }

@@ -4,11 +4,8 @@ package com.example.demo.service.impl;
 import com.example.demo.VOclass.LeaveApplicationVO;
 import com.example.demo.VOclass.ReturnApplicationVO;
 import com.example.demo.VOclass.StudentVO;
+import com.example.demo.entity.*;
 import com.example.demo.entity.Class;
-import com.example.demo.entity.Department;
-import com.example.demo.entity.LeaveApplication;
-import com.example.demo.entity.ReturnApplication;
-import com.example.demo.entity.Student;
 import com.example.demo.mapper.*;
 import com.example.demo.service.DeptAdminService;
 import com.example.demo.utils.ConstVariables;
@@ -31,15 +28,16 @@ public class DeptAdminServiceimpl implements DeptAdminService {
     DepartmentMapper departmentMapper;
     StudentMapper studentMapper;
     ReturnApplicationMapper returnApplicationMapper;
+    StudentLogMapper studentLogMapper;
 
-    public   DeptAdminServiceimpl(ClassMapper classMapper,DepartmentMapper departmentMapper, StudentMapper studentMapper, LeaveApplicationMapper leaveApplicationMapper, ReturnApplicationMapper returnApplicationMapper){
+    public DeptAdminServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ClassMapper classMapper, DepartmentMapper departmentMapper, StudentMapper studentMapper, ReturnApplicationMapper returnApplicationMapper, StudentLogMapper studentLogMapper) {
         this.leaveApplicationMapper = leaveApplicationMapper;
-        this.returnApplicationMapper =  returnApplicationMapper;
-        this.studentMapper = studentMapper;
-        this.departmentMapper = departmentMapper;
         this.classMapper = classMapper;
+        this.departmentMapper = departmentMapper;
+        this.studentMapper = studentMapper;
+        this.returnApplicationMapper = returnApplicationMapper;
+        this.studentLogMapper = studentLogMapper;
     }
-
 
     @Override
     public Response<?> getNoApplyForLeave(int day_num) {
@@ -184,5 +182,28 @@ public class DeptAdminServiceimpl implements DeptAdminService {
 
         return new Response<>(true, "查询成功", result);
     }
+
+    @Override
+    public Response<?> getSubmitLeaveNotLeave() {
+        List<LeaveApplication> allLeaveApplications = leaveApplicationMapper.findAll();
+        List<Student> studentList = new ArrayList<>();
+//        Student student = studentMapper.findById("19307110197");
+//        List<StudentLog> studentLogs = studentLogMapper.findByStudent(student);
+//        if (studentLogs.size()==0){
+//            return new Response<>(false, "test");
+//        }
+        for(LeaveApplication leaveApplication : allLeaveApplications){
+            Student student = leaveApplication.getStudent();
+            List<StudentLog> studentLogs = studentLogMapper.findByStudent(student);
+            if(studentLogs.size()!=0){
+                if (studentLogs.get(studentLogs.size()-1).getAction().equals(ConstVariables.IN_CAMPUS)){
+                    studentList.add(student);
+                }
+            }
+
+        }
+        return new Response<>(true, "获取信息成功",studentList);
+    }
+
 
 }
