@@ -45,7 +45,7 @@ public class DeptAdminController {
         boolean all = (boolean) body.get("all");
         String className = (String) body.get("className");
         String  deptName = (String)  body.get("deptName");
-        int studentNum = (int) body.get("syudentNum");
+        int studentNum = (int) body.get("studentNum");
         return deptAdminService.getLongestTimeStudent(all,className,deptName,studentNum);
     }
 

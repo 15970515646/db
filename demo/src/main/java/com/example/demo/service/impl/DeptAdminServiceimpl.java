@@ -55,6 +55,9 @@ public class DeptAdminServiceimpl implements DeptAdminService {
             }
 
         }
+        if(count==0){
+            return 0;
+        }
         return totalTime/count;
     }
     @Override
@@ -157,6 +160,9 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         List<LeaveStudentVO> result=new ArrayList<>();
         for (Student s:studentList){
             List<StudentLog> studentLogList = studentLogMapper.findByStudent(s);
+            if(studentLogList.size()==0) {
+                continue;
+            }
             if(studentLogList.get(studentLogList.size()-1).getAction().equals(ConstVariables.OUT_CAMPUS)){
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String timeStr = df.format(studentLogList.get(studentLogList.size()-1).getCreateTime());
@@ -218,8 +224,11 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         for(Student s:studentList){
             List<StudentLog> logList = studentLogMapper.findByStudent(s);
             List<LeaveApplication> leaveApplicationList = leaveApplicationMapper.findByStudent(s);
+            if(logList.size()==0||leaveApplicationList.size()==0){
+                return new Response<>(true, "查询成功", result);
+            }
             if(logList.get(logList.size()-1).getAction().equals(ConstVariables.OUT_CAMPUS)){
-                if(!leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.APPROVE_APPLY)&&!leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.REFUSE_APPLY)){
+                if(leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.APPROVE_APPLY)&&leaveApplicationList.get(leaveApplicationList.size()-1).getStatus().equals(ConstVariables.REFUSE_APPLY)){
                     Timestamp time=new Timestamp(System.currentTimeMillis());
                     if(time.getTime()-logList.get(logList.size()-1).getCreateTime().getTime()>24*ConstVariables.MILLI_TO_HOUR){
                         result.add(new StudentVO(s.getId(),s.getName()));
