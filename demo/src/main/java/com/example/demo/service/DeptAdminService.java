@@ -15,4 +15,15 @@ public interface DeptAdminService {
     public Response<?> getLongestTimeStudent(boolean all, String className, String deptName, int studentNum);
 
     public Response<?> getSubmitLeaveNotLeave();
+
+    public Response<?> getNotLeaveStudentInCampus(int dayNum);
+
+    public Response<?> getNotLeaveStudentInDept(int dayNum, String deptName);
+
+    public Response<?> getNotLeaveStudentInClass(int dayNum, String className);
+
+    public Response<?> getSameTimeDailyReport(int dayNum);
+
+    public Response<?> getMostLogCampus(int dayNum, String deptName);
+
 }

@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.entity.Class;
 import com.example.demo.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,5 @@ public interface StudentMapper extends JpaRepository<Student,Long> {
 //    List<Student>findAllByAClass_ClassName(String className);
 
     List<Student>findAllByStatus(String status);
+    List<Student> findByAclass(Class aClass);
 }

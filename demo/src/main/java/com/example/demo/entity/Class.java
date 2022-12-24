@@ -22,7 +22,7 @@ public class Class {
     @JoinColumn(name = "deptName")
     private Department department;
 
-    @OneToMany(targetEntity = Student.class,mappedBy = "aClass")
+    @OneToMany(targetEntity = Student.class,mappedBy = "aclass")
     private Set<Student> StudentSet=new HashSet<>();
 
     @OneToMany(targetEntity = ClassAdmin.class,mappedBy = "aClass")

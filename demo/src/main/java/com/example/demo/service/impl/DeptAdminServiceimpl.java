@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.VOclass.LeaveApplicationVO;
 import com.example.demo.VOclass.ReturnApplicationVO;
 import com.example.demo.VOclass.StudentVO;
@@ -14,8 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.example.demo.utils.ConstVariables.MILLI_TO_DAY;
 
@@ -29,14 +29,16 @@ public class DeptAdminServiceimpl implements DeptAdminService {
     StudentMapper studentMapper;
     ReturnApplicationMapper returnApplicationMapper;
     StudentLogMapper studentLogMapper;
+    DailyReportMapper dailyReportMapper;
 
-    public DeptAdminServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ClassMapper classMapper, DepartmentMapper departmentMapper, StudentMapper studentMapper, ReturnApplicationMapper returnApplicationMapper, StudentLogMapper studentLogMapper) {
+    public DeptAdminServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ClassMapper classMapper, DepartmentMapper departmentMapper, StudentMapper studentMapper, ReturnApplicationMapper returnApplicationMapper, StudentLogMapper studentLogMapper, DailyReportMapper dailyReportMapper) {
         this.leaveApplicationMapper = leaveApplicationMapper;
         this.classMapper = classMapper;
         this.departmentMapper = departmentMapper;
         this.studentMapper = studentMapper;
         this.returnApplicationMapper = returnApplicationMapper;
         this.studentLogMapper = studentLogMapper;
+        this.dailyReportMapper = dailyReportMapper;
     }
 
     @Override
@@ -202,8 +204,182 @@ public class DeptAdminServiceimpl implements DeptAdminService {
             }
 
         }
-        return new Response<>(true, "获取信息成功",studentList);
+        JSONObject result = new JSONObject();
+        result.put("学生信息",studentList);
+        result.put("学生数量", studentList.size());
+        return new Response<>(true, "获取信息成功",result);
     }
 
+    @Override
+    public Response<?> getNotLeaveStudentInCampus(int dayNum) {
+        List<Student> studentList = studentMapper.findAll();
+        List<StudentVO> result = new ArrayList<>();
 
+        if (studentList.size()==0){
+            return new Response<>(false, "no student");
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long today = timestamp.getTime()/ConstVariables.MILLI_TO_DAY;
+        for (Student student : studentList){
+            int flag =0;
+            List<StudentLog>studentLogs = studentLogMapper.findByStudent(student);
+            if(studentLogs.size()>0 && studentLogs.get(studentLogs.size()-1).getAction().equals(ConstVariables.IN_CAMPUS)){
+                for(StudentLog studentLog : studentLogs){
+                    if (today-studentLog.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1)
+                        flag=1;
+                }
+                if (flag==0)
+                    result.add(new StudentVO(student.getId(),student.getName()));
+            }
+        }
+        return new Response<>(true,"获取成功",result);
+    }
+
+    @Override
+    public Response<?> getNotLeaveStudentInDept(int dayNum, String deptName) {
+        Department department = departmentMapper.findDepartmentByDeptName(deptName);
+        List<Class> classList = classMapper.findByDepartment(department);
+        List<Student> studentList = new ArrayList<>();
+        for (Class aClass : classList){
+            List<Student> students = studentMapper.findByAclass(aClass);
+            studentList.addAll(students);
+        }
+        if (studentList.size()==0)
+            return new Response<>(false,"该院系中没有学生");
+        List<StudentVO> result = new ArrayList<>();
+
+        if (studentList.size()==0){
+            return new Response<>(false, "no student");
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long today = timestamp.getTime()/ConstVariables.MILLI_TO_DAY;
+        for (Student student : studentList){
+            int flag =0;
+            List<StudentLog>studentLogs = studentLogMapper.findByStudent(student);
+            if(studentLogs.size()>0 && studentLogs.get(studentLogs.size()-1).getAction().equals(ConstVariables.IN_CAMPUS)){
+                for(StudentLog studentLog : studentLogs){
+                    if (today-studentLog.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1)
+                        flag=1;
+                }
+                if (flag==0)
+                    result.add(new StudentVO(student.getId(),student.getName()));
+            }
+        }
+        return new Response<>(true,"获取成功",result);
+    }
+
+    @Override
+    public Response<?> getNotLeaveStudentInClass(int dayNum, String className) {
+        Class newClass = classMapper.findByClassName(className);
+        List<Student> studentList = studentMapper.findByAclass(newClass);
+        if (studentList.size()==0){
+            return new Response<>(false,"该班级中没有学生");
+        }
+        List<StudentVO> result = new ArrayList<>();
+
+        if (studentList.size()==0){
+            return new Response<>(false, "no student");
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long today = timestamp.getTime()/ConstVariables.MILLI_TO_DAY;
+        for (Student student : studentList){
+            int flag =0;
+            List<StudentLog>studentLogs = studentLogMapper.findByStudent(student);
+            if(studentLogs.size()>0 && studentLogs.get(studentLogs.size()-1).getAction().equals(ConstVariables.IN_CAMPUS)){
+                for(StudentLog studentLog : studentLogs){
+                    if (today-studentLog.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1)
+                        flag=1;
+                }
+                if (flag==0)
+                    result.add(new StudentVO(student.getId(),student.getName()));
+            }
+        }
+        return new Response<>(true,"获取成功",result);
+    }
+
+    @Override
+    public Response<?> getSameTimeDailyReport(int dayNum) {
+        List<Student> allStudent = studentMapper.findAll();
+        List<Student> result = new ArrayList<>();
+        for(int i=0;i<allStudent.size();i++){
+            List<Student> temp = new ArrayList<>();
+            for(int j=i+1;j<allStudent.size();j++){
+                temp.add(allStudent.get(j));
+            }
+            result.addAll(compareDailyReport(allStudent.get(i),temp,dayNum));
+        }
+        JSONObject res = new JSONObject();
+        res.put("学生数量",result.size());
+        res.put("学生信息",result);
+        return new Response<>(true, "获取成功", res);
+    }
+
+    @Override
+    public Response<?> getMostLogCampus(int dayNum, String deptName) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put(ConstVariables.HANDAN_CAMPUS,0);
+        map.put(ConstVariables.JIANGWAN_CAMPUS,0);
+        map.put(ConstVariables.ZHANGJIANG_CAMPUS,0);
+        map.put(ConstVariables.FENGLIN_CAMPUS,0);
+
+        Department department = departmentMapper.findDepartmentByDeptName(deptName);
+        List<Class> classList = classMapper.findByDepartment(department);
+        List<Student> studentList = new ArrayList<>();
+        for (Class aClass : classList){
+            List<Student> students = studentMapper.findByAclass(aClass);
+            studentList.addAll(students);
+        }
+        for (Student student : studentList){
+            List<StudentLog> studentLogs = studentLogMapper.findByStudent(student);
+            for(StudentLog studentLog:studentLogs){
+                map.put(studentLog.getCampusName(),map.get(studentLog.getCampusName())+1);
+            }
+        }
+
+        List<Map.Entry<String,Integer>> list = new ArrayList(map.entrySet());
+        Collections.sort(list, (o1, o2) -> (o1.getValue() - o2.getValue()));
+        return new Response<>(true, "获取成功", list.get(3).getKey());
+
+    }
+
+    private List<Student> compareDailyReport(Student student, List<Student> studentList, int dayNum){
+        List<Student> students = new ArrayList<>();
+
+        for (Student student1 : studentList){
+            if(compareStudent(student,student1,dayNum)){
+                students.add(student1);
+            }
+        }
+        if (students.size()!=0)
+            students.add(student);
+        return students;
+    }
+    private boolean compareStudent(Student student1, Student student2, int dayNum){
+        List<DailyReport> student1s = dailyReportMapper.findByStudent(student1);
+        List<DailyReport> student2s = dailyReportMapper.findByStudent(student2);
+        List<DailyReport> result1 = new ArrayList<>();
+        List<DailyReport> result2 = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Long today = timestamp.getTime()/ConstVariables.MILLI_TO_DAY;
+
+        for (DailyReport dailyReport : student1s){
+            if (today - dailyReport.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1){
+                result1.add(dailyReport);
+            }
+        }
+        for (DailyReport dailyReport : student2s){
+            if (today - dailyReport.getCreateTime().getTime()/ MILLI_TO_DAY<dayNum+1){
+                result2.add(dailyReport);
+            }
+        }
+        if(result1.size()==0 || result2.size()==0)
+            return false;
+        if(result1.size()!=result2.size())
+            return false;
+        for(int i=0;i<result1.size();i++){
+            if (result1.get(i).getCreateTime().getTime()/ConstVariables.MILLI_TO_MINUTE!=result2.get(i).getCreateTime().getTime()/ConstVariables.MILLI_TO_MINUTE)
+                return false;
+        }
+        return true;
+    }
 }

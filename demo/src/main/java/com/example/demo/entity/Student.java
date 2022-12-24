@@ -69,7 +69,8 @@ public class Student {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "className")
-    private Class aClass;
+    private Class aclass;
+
 
     @JsonIgnore
     @OneToMany(targetEntity = ClassAdminExamineReturn.class,mappedBy = "student")

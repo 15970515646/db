@@ -4,10 +4,12 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.service.DeptAdminService;
 import com.example.demo.utils.Response;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/DeptAdmin")
@@ -56,6 +58,36 @@ public class DeptAdminController {
     @GetMapping("/getnotleavestudent")
     public Response<?> getSubmitLeaveNotLeaveStudent(){
         return deptAdminService.getSubmitLeaveNotLeave();
+    }
+
+    @GetMapping("/getnoleavestudent")
+    public Response<?> getNoLeaveStudent(@RequestBody JSONObject body){
+        int dayNum = (Integer)body.get("day_num");
+        String flag = (String) body.get("flag");
+        String name = (String) body.get("name");
+        if (flag.equals("全校")){
+            return deptAdminService.getNotLeaveStudentInCampus(dayNum);
+        }
+        if (flag.equals("院系")){
+            return deptAdminService.getNotLeaveStudentInDept(dayNum, name);
+        }
+        if (flag.equals("班级")){
+            return deptAdminService.getNotLeaveStudentInClass(dayNum, name);
+        }
+        return null;
+    }
+
+    @GetMapping("/getsametimedailyreport")
+    public Response<?> getSameTimeDailyReport(@RequestBody JSONObject body){
+        int dayNum = (Integer) body.get("day_num");
+        return deptAdminService.getSameTimeDailyReport(dayNum);
+    }
+
+    @GetMapping("/getmostlogcampus")
+    public Response<?> getMostLogCampus(@RequestBody JSONObject body){
+        int dayNum = (Integer) body.get("day_num");
+        String deptName = (String) body.get("dept_name");
+        return deptAdminService.getMostLogCampus(dayNum, deptName);
     }
     //问题1：众多的进出校园log中，怎么去辨别最新的，第五点有要求离校超过24小时，肯定要知道最后那个离校日志才能确定
     //问题2：第三点中，平均离校时间，应该就是比较相同的一段时间内比如一年离校的总时长，所以每次的时长怎么获得，要找邻近的一次出校一次入校log时间之差，感觉好复杂
