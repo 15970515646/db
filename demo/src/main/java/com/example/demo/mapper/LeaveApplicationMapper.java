@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface LeaveApplicationMapper extends JpaRepository<LeaveApplication, Long> {
     List<LeaveApplication>findByStudentAndStatus(Student student, String status);
-
+    LeaveApplication findById(String id);
     List<LeaveApplication>findAllByCreateTimeLessThan(Timestamp time);
     List <LeaveApplication>findAllByStatus(String status);
 }

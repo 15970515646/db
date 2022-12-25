@@ -30,8 +30,9 @@ public class DeptAdminServiceimpl implements DeptAdminService {
     ReturnApplicationMapper returnApplicationMapper;
     StudentLogMapper studentLogMapper;
     DailyReportMapper dailyReportMapper;
+    DeptAdminMapper deptAdminMapper;
 
-    public DeptAdminServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ClassMapper classMapper, DepartmentMapper departmentMapper, StudentMapper studentMapper, ReturnApplicationMapper returnApplicationMapper, StudentLogMapper studentLogMapper, DailyReportMapper dailyReportMapper) {
+    public DeptAdminServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ClassMapper classMapper, DepartmentMapper departmentMapper, StudentMapper studentMapper, ReturnApplicationMapper returnApplicationMapper, StudentLogMapper studentLogMapper, DailyReportMapper dailyReportMapper,DeptAdminMapper deptAdminMapper) {
         this.leaveApplicationMapper = leaveApplicationMapper;
         this.classMapper = classMapper;
         this.departmentMapper = departmentMapper;
@@ -39,6 +40,7 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         this.returnApplicationMapper = returnApplicationMapper;
         this.studentLogMapper = studentLogMapper;
         this.dailyReportMapper = dailyReportMapper;
+        this.deptAdminMapper = deptAdminMapper;
     }
 
     @Override
@@ -340,6 +342,21 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         Collections.sort(list, (o1, o2) -> (o1.getValue() - o2.getValue()));
         return new Response<>(true, "获取成功", list.get(3).getKey());
 
+    }
+
+    @Override
+    public Response<?> getApplications(String teacherId) {
+        DeptAdmin deptAdmin = dept
+    }
+
+    @Override
+    public Response<?> examineLeave(String applicationId, String operation) {
+        return null;
+    }
+
+    @Override
+    public Response<?> examineReturn(String applicationId, String operation) {
+        return null;
     }
 
     private List<Student> compareDailyReport(Student student, List<Student> studentList, int dayNum){

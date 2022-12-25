@@ -25,6 +25,15 @@ public class DeptAdminExamineReturn{
     @Column(name = "reason", length = 256, nullable = false)
     private String reason;
 
+    public DeptAdminExamineReturn(String reason, String location, String predictReturnDate, String status, Student student, DeptAdmin deptAdmin) {
+        this.reason = reason;
+        this.location = location;
+        this.predictReturnDate = predictReturnDate;
+        this.status = status;
+        this.student = student;
+        this.deptAdmin = deptAdmin;
+    }
+
     @Column(name = "location", length = 256, nullable = false)
     private String location;
 

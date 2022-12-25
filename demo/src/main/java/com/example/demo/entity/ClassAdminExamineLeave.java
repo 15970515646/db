@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.utils.ConstVariables;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,16 @@ public class ClassAdminExamineLeave {
     @ManyToOne
     @JoinColumn(name = "studentId")
     private Student  student;
+
+    public ClassAdminExamineLeave(String reason, String destination, String predictReturnDate, String predictLeaveDate, Student student, ClassAdmin classAdmin) {
+        this.reason = reason;
+        this.destination = destination;
+        this.predictReturnDate = predictReturnDate;
+        this.predictLeaveDate = predictLeaveDate;
+        this.status = ConstVariables.CLASS_ADMIN_CHECK;
+        this.student = student;
+        this.classAdmin = classAdmin;
+    }
 
     @ManyToOne
     @JoinColumn(name = "teacherId")

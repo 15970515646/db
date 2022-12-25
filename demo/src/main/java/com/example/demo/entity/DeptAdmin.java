@@ -19,7 +19,7 @@ import java.util.Set;
 public class DeptAdmin {
     @Id
     @Column(name = "teacherId", length = 11, nullable = false)
-    private String teacher_id;
+    private String teacherId;
 
     @ManyToOne
     @JoinColumn(name = "deptName")

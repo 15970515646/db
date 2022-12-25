@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ReturnApplicationMapper extends JpaRepository<ReturnApplication, Long> {
     List<ReturnApplication> findByStudentAndStatus(Student student, String status);
-
+    ReturnApplication findById(String id);
     List <ReturnApplication>findAllByStatus(String status);
 }

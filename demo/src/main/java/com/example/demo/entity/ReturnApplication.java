@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.utils.ConstVariables;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.sql.Timestamp;
 @Table(name = "Return_application")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class ReturnApplication {
+
     @Id
     @GeneratedValue(generator = "jpa-uuid")
     @Column(name = "id", length = 35, nullable = false)
@@ -35,6 +37,7 @@ public class ReturnApplication {
 
     @Column(name = "createTime",insertable = false,updatable = false,columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
+
 
     @ManyToOne
     @JoinColumn(name = "studentId")

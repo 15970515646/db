@@ -24,15 +24,24 @@ public class StudentServiceimpl implements StudentService {
     StudentMapper studentMapper;
     StudentLogMapper studentLogMapper;
     DailyReportMapper dailyReportMapper;
+    ClassAdminExamineReturnMapper classAdminExamineReturnMapper;
+    ClassAdminExamineLeaveMapper classAdminExamineLeaveMapper;
+    ClassAdminMapper classAdminMapper;
 
     @Autowired
-    public StudentServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ReturnApplicationMapper returnApplicationMapper, StudentMapper studentMapper, StudentLogMapper studentLogMapper, DailyReportMapper dailyReportMapper) {
+    public StudentServiceimpl(LeaveApplicationMapper leaveApplicationMapper, ReturnApplicationMapper returnApplicationMapper, StudentMapper studentMapper, StudentLogMapper studentLogMapper, DailyReportMapper dailyReportMapper, ClassAdminExamineReturnMapper classAdminExamineReturnMapper, ClassAdminExamineLeaveMapper classAdminExamineLeaveMapper, ClassAdminMapper classAdminMapper) {
         this.leaveApplicationMapper = leaveApplicationMapper;
         this.returnApplicationMapper = returnApplicationMapper;
         this.studentMapper = studentMapper;
         this.studentLogMapper = studentLogMapper;
         this.dailyReportMapper = dailyReportMapper;
+        this.classAdminExamineReturnMapper = classAdminExamineReturnMapper;
+        this.classAdminExamineLeaveMapper = classAdminExamineLeaveMapper;
+        this.classAdminMapper = classAdminMapper;
+
     }
+
+
 
     @Override
     public Response<?> addDailyReport(String studentId, String location, String healthyStatus) {
@@ -79,13 +88,24 @@ public class StudentServiceimpl implements StudentService {
     @Override
     public Response<?> submitStudentLeaveApplication(String reason, String destination, String predictReturnDate, String predictLeaveDate, String studentId) {
         Student student = studentMapper.findById(studentId);
+//        List<ClassAdmin> classAdmins= classAdminMapper.findByAClass(student.getAclass());
+//        if(classAdmins.size()==0)
+//            return new Response<>(false,"提交离校申请失败，该学生没有对应辅导员");
+//        ClassAdmin classAdmin = classAdmins.get(0);
+//        classAdminExamineLeaveMapper.save(new ClassAdminExamineLeave(reason, destination, predictReturnDate, predictLeaveDate, student, classAdmin))
         leaveApplicationMapper.save(new LeaveApplication(reason, destination, predictReturnDate, predictLeaveDate, student));
+
         return new Response<>(true,"提交离校申请成功");
     }
 
     @Override
     public Response<?> submitStudentReturnApplication(String reason, String location, String predictReturnDate, String studentId) {
         Student student = studentMapper.findById(studentId);
+//        List<ClassAdmin> classAdmins= classAdminMapper.findByAClass(student.getAclass());
+//        if(classAdmins.size()==0)
+//            return new Response<>(false,"提交离校申请失败，该学生没有对应辅导员");
+//        ClassAdmin classAdmin = classAdmins.get(0);
+//        classAdminExamineReturnMapper.save(new ClassAdminExamineReturn(reason, location, predictReturnDate, student,classAdmin));
         returnApplicationMapper.save(new ReturnApplication(reason, location, predictReturnDate, student));
         return new Response<>(true,"提交返校申请成功");
     }

@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.utils.ConstVariables;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,15 @@ public class ClassAdminExamineReturn{
 
     @Column(name = "createTime", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createTime;
+
+    public ClassAdminExamineReturn(String reason, String location, String predict_return_date,  Student student, ClassAdmin classAdmin) {
+        this.reason = reason;
+        this.location = location;
+        this.predict_return_date = predict_return_date;
+        this.status = ConstVariables.CLASS_ADMIN_CHECK;
+        this.student = student;
+        this.classAdmin = classAdmin;
+    }
 
     @ManyToOne
     @JoinColumn(name = "studentId")

@@ -41,6 +41,16 @@ public class DeptAdminExamineLeave {
     private Timestamp createTime;
 
 
+    public DeptAdminExamineLeave(String reason, String destination, String predictReturnDate, String predictLeaveDate, String status, Student student, DeptAdmin deptAdmin) {
+        this.reason = reason;
+        this.destination = destination;
+        this.predictReturnDate = predictReturnDate;
+        this.predictLeaveDate = predictLeaveDate;
+        this.status = status;
+        this.student = student;
+        this.deptAdmin = deptAdmin;
+    }
+
     @ManyToOne
     @JoinColumn(name = "studentId")
     private Student  student;
