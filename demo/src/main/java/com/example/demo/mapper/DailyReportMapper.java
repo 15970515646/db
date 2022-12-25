@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface DailyReportMapper extends JpaRepository<DailyReport, Long> {
     public List<DailyReport> findByStudent(Student student);
+    public List<DailyReport> findByStudentOrderByCreateTime(Student student);
 }

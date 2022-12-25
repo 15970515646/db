@@ -14,5 +14,6 @@ public class ConstVariables {
     public static final String JIANGWAN_CAMPUS = "江湾校区";
     public static final String FENGLIN_CAMPUS = "枫林校区";
     public static final String ZHANGJIANG_CAMPUS = "张江校区";
+    public static final String NO_PERMISSION = "禁止入校";
 
 }
