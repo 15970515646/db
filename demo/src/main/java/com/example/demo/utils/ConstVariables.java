@@ -7,6 +7,7 @@ public class ConstVariables {
     public static final String CLASS_ADMIN_CHECK = "辅导员审核";
     public static final String DEPT_ADMIN_CHECK = "院系管理员审核";
     public static final String APPLICATION_REFUSED = "已拒绝";
+    public static final String APPLICATION_PASS = "已通过";
     public static final String REFUSE_APPLY = "拒绝";
     public static final String APPROVE_APPLY = "同意";
     public static final String IN_CAMPUS = "进校";

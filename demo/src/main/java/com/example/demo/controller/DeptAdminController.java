@@ -89,6 +89,11 @@ public class DeptAdminController {
         String deptName = (String) body.get("dept_name");
         return deptAdminService.getMostLogCampus(dayNum, deptName);
     }
+    @GetMapping("/getapplications")
+    public Response<?> getApplications(@RequestBody JSONObject body){
+        String teacherId = (String) body.get("teacher_id");
+        return deptAdminService.getApplications(teacherId);
+    }
     //问题1：众多的进出校园log中，怎么去辨别最新的，第五点有要求离校超过24小时，肯定要知道最后那个离校日志才能确定
     //问题2：第三点中，平均离校时间，应该就是比较相同的一段时间内比如一年离校的总时长，所以每次的时长怎么获得，要找邻近的一次出校一次入校log时间之差，感觉好复杂
     //其他几点测试已经简略完成，就是3，5两个，3代码架子搭起来了，就差上面说的如何确定时间，5可在4的基础上变化一下就行，也是确定时间问题

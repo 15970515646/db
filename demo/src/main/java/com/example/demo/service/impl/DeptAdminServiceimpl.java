@@ -346,13 +346,59 @@ public class DeptAdminServiceimpl implements DeptAdminService {
 
     @Override
     public Response<?> getApplications(String teacherId) {
-        DeptAdmin deptAdmin = dept
+        DeptAdmin deptAdmin = deptAdminMapper.findByTeacherId(teacherId);
+        if (deptAdmin==null)
+            return new Response<>(false,"该院系管理员不存在");
+        Department department = deptAdmin.getDepartment();
+
+        List<Class> classList = classMapper.findByDepartment(department);
+        List<Student> studentList = new ArrayList<>();
+        for (Class aClass : classList){
+            List<Student> students = studentMapper.findByAclass(aClass);
+            studentList.addAll(students);
+        }
+        if (studentList.size()==0)
+            return new Response<>(false,"该院系中没有学生");
+        List<ReturnApplicationVO> returnApplications = new ArrayList<>();
+        List<LeaveApplicationVO> leaveApplications = new ArrayList<>();
+        for(Student student : studentList){
+            for(LeaveApplication leaveApplication : leaveApplicationMapper.findByStudentAndStatus(student, ConstVariables.DEPT_ADMIN_CHECK)){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(leaveApplication.getCreateTime());
+                leaveApplications.add(new LeaveApplicationVO(leaveApplication.getId(),leaveApplication.getReason(), leaveApplication.getDestination(), leaveApplication.getPredictReturnDate(),leaveApplication.getPredictLeaveDate(),leaveApplication.getStatus(),timeStr,leaveApplication.getStudent().getId()));
+            }
+            for(ReturnApplication returnApplication : returnApplicationMapper.findByStudentAndStatus(student, ConstVariables.DEPT_ADMIN_CHECK)){
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String timeStr = df.format(returnApplication.getCreateTime());
+                returnApplications.add(new ReturnApplicationVO(returnApplication.getId(),returnApplication.getReason(), returnApplication.getLocation(), returnApplication.getPredictReturnDate(),returnApplication.getStatus(),timeStr,returnApplication.getStudent().getId()));
+            }
+        }
+        JSONObject res = new JSONObject();
+        res.put("离校申请",leaveApplications);
+        res.put("返校申请", returnApplications);
+        return new Response<>(true,"获取申请信息成功",res);
+
     }
 
     @Override
     public Response<?> examineLeave(String applicationId, String operation) {
-        return null;
+        LeaveApplication leaveApplication = leaveApplicationMapper.findById(applicationId);
+        if (leaveApplication==null)
+            return new Response<>(false,"申请ID错误");
+        if (!leaveApplication.getStatus().equals(ConstVariables.DEPT_ADMIN_CHECK))
+            return new Response<>(false,"该申请不在院系管理员的管辖范围");
+        if (operation.equals(ConstVariables.APPROVE_APPLY)){
+            leaveApplication.setStatus(ConstVariables.APPLICATION_PASS);
+            leaveApplicationMapper.save(leaveApplication);
+        }
+        else {
+            leaveApplication.setStatus(ConstVariables.APPLICATION_REFUSED);
+            leaveApplicationMapper.save(leaveApplication);
+        }
+        return new Response<>(true,"院系管理员审核离校申请完成");
     }
+
+}
 
     @Override
     public Response<?> examineReturn(String applicationId, String operation) {
