@@ -26,9 +26,13 @@ public interface DeptAdminService {
 
     public Response<?> getMostLogCampus(int dayNum, String deptName);
 
+
     public Response<?> getApplications(String teacherId);
 
     public Response<?> examineLeave(String applicationId, String operation);
     public Response<?> examineReturn(String applicationId, String operation);
+
+
+    public Response<?> getstudentoutschoolnotsubmitfor24();
 
 }
