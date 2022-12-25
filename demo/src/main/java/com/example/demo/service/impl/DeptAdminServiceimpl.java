@@ -398,11 +398,25 @@ public class DeptAdminServiceimpl implements DeptAdminService {
         return new Response<>(true,"院系管理员审核离校申请完成");
     }
 
-}
+
 
     @Override
     public Response<?> examineReturn(String applicationId, String operation) {
-        return null;
+        ReturnApplication returnApplication = returnApplicationMapper.findById(applicationId);
+        if(returnApplication==null)
+            return new Response<>(false,"申请ID错误");
+        if (!returnApplication.getStatus().equals(ConstVariables.DEPT_ADMIN_CHECK))
+            return new Response<>(false,"该申请不在院系管理员的管辖范围");
+        if (operation.equals(ConstVariables.APPROVE_APPLY)){
+            returnApplication.setStatus(ConstVariables.APPLICATION_PASS);
+            returnApplicationMapper.save(returnApplication);
+        }
+        else {
+            returnApplication.setStatus(ConstVariables.APPLICATION_REFUSED);
+            returnApplicationMapper.save(returnApplication);
+        }
+        return new Response<>(true,"院系管理员审核返校申请完成");
+
     }
 
     private List<Student> compareDailyReport(Student student, List<Student> studentList, int dayNum){
